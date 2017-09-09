@@ -14,5 +14,9 @@ test_problem3 = do
     assertEqual 29 $ problem3 13195
     assertEqual 6857 $ problem3 600851475143
 
+test_problem4 = do
+    assertEqual 9009 $ problem4 [10..99]
+    assertEqual 906609 $ problem4 [100..999]
+
 main :: IO ()
 main = htfMain htf_thisModulesTests

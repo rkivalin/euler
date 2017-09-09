@@ -2,9 +2,10 @@ module Euler
 ( problem1
 , problem2
 , problem3
+, problem4
 ) where
 
-import Data.List (foldl')
+import Data.List (foldl', maximum)
 
 isqrt :: (Integral a) => a -> a
 isqrt = floor . sqrt . fromIntegral
@@ -30,6 +31,19 @@ primeFactors x = factors x primeSeq where
     factors 1 _ = []
     factors x (f:fs) = if x `multipleOf` f then f:(factors (x `div` f) (f:fs)) else factors x fs
 
+digits :: Integer -> [Int]
+digits 0 = [0]
+digits x = reverse $ split x where
+    split :: Integer -> [Int]
+    split 0 = []
+    split n = digit : (split rest) where
+        digit = fromIntegral $ n `mod` 10
+        rest = fromIntegral $ n `div` 10
+
+isPalindrome x = let
+    d = digits x
+    in d == reverse d
+
 problem1 :: Integer -> [Integer] -> Integer
 problem1 n divisors = foldl' (+) 0 $ filter (`multipleOfAny` divisors) [1..(n-1)]
 
@@ -38,3 +52,9 @@ problem2 n = foldl' (+) 0 $ filter even $ takeWhile (<n) fibonacciSeq
 
 problem3 :: Integer -> Integer
 problem3 = last . primeFactors
+
+problem4 :: [Integer] -> Integer
+problem4 range = maximum $ filter isPalindrome $ products range range where
+    products [] b = []
+    products [a] b = map (*a) b
+    products (a:as) b = products [a] b ++ (products as b)
