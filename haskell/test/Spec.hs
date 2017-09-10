@@ -26,5 +26,13 @@ test_problem6 = do
     assertEqual 2640 $ problem6 [1..10]
     assertEqual 25164150 $ problem6 [1..100]
 
+test_problem7 = do
+    assertEqual 13 $ problem7 6
+    assertEqual 104743 $ problem7 10001
+
+test_problem8 = do
+    assertEqual 5832 $ problem8 4
+    assertEqual 23514624000 $ problem8 13
+
 main :: IO ()
 main = htfMain htf_thisModulesTests
