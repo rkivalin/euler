@@ -11,4 +11,5 @@ solution ("1":_) = putStrLn . show $ problem1 1000 [3, 5]
 solution ("2":_) = putStrLn . show $ problem2 (4 * 10^6)
 solution ("3":_) = putStrLn . show $ problem3 600851475143
 solution ("4":_) = putStrLn . show $ problem4 [100..999]
+solution ("5":_) = putStrLn . show $ problem5 [1..20]
 solution _ = putStrLn "Solution for this problem is not implemented"

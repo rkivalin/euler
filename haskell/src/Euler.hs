@@ -3,9 +3,11 @@ module Euler
 , problem2
 , problem3
 , problem4
+, problem5
 ) where
 
 import Data.List (foldl', maximum)
+import qualified Data.Map.Strict as Map
 
 isqrt :: (Integral a) => a -> a
 isqrt = floor . sqrt . fromIntegral
@@ -26,10 +28,16 @@ isPrime x = not $ x `multipleOfAny` primes where
 primeSeq :: (Integral a) => [a]
 primeSeq = 2 : filter isPrime [3,5..]
 
-primeFactors :: (Integral a) => a -> [a]
-primeFactors x = factors x primeSeq where
-    factors 1 _ = []
-    factors x (f:fs) = if x `multipleOf` f then f:(factors (x `div` f) (f:fs)) else factors x fs
+factorize :: (Integral a) => a -> Map.Map a Int
+factorize x = factorize x primeSeq where
+    factorize 1 _ = Map.empty
+    factorize x (f:fs) = if x `multipleOf` f
+        then Map.insertWith (+) f 1 (factorize (x `div` f) (f:fs))
+        else factorize x fs
+
+unfactorize :: (Integral a) => Map.Map a Int -> a
+unfactorize = product . concatMap replicate' . Map.toList where
+    replicate' (factor, count) = replicate count factor
 
 digits :: Integer -> [Int]
 digits 0 = [0]
@@ -44,6 +52,11 @@ isPalindrome x = let
     d = digits x
     in d == reverse d
 
+lcm :: (Integral a, Ord a) => [a] -> a
+lcm numbers = let
+    commonFactors = foldl' (Map.unionWith max) Map.empty $ map factorize numbers
+    in unfactorize commonFactors
+
 problem1 :: Integer -> [Integer] -> Integer
 problem1 n divisors = foldl' (+) 0 $ filter (`multipleOfAny` divisors) [1..(n-1)]
 
@@ -51,10 +64,13 @@ problem2 :: Integer -> Integer
 problem2 n = foldl' (+) 0 $ filter even $ takeWhile (<n) fibonacciSeq
 
 problem3 :: Integer -> Integer
-problem3 = last . primeFactors
+problem3 = fst . Map.findMax . factorize
 
 problem4 :: [Integer] -> Integer
 problem4 range = maximum $ filter isPalindrome $ products range range where
     products [] b = []
     products [a] b = map (*a) b
     products (a:as) b = products [a] b ++ (products as b)
+
+problem5 :: [Integer] -> Integer
+problem5 = Euler.lcm
