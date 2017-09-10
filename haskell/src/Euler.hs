@@ -4,6 +4,7 @@ module Euler
 , problem3
 , problem4
 , problem5
+, problem6
 ) where
 
 import Data.List (foldl', maximum)
@@ -57,6 +58,9 @@ lcm numbers = let
     commonFactors = foldl' (Map.unionWith max) Map.empty $ map factorize numbers
     in unfactorize commonFactors
 
+square :: (Integral a) => a -> a
+square x = x * x
+
 problem1 :: Integer -> [Integer] -> Integer
 problem1 n divisors = foldl' (+) 0 $ filter (`multipleOfAny` divisors) [1..(n-1)]
 
@@ -74,3 +78,8 @@ problem4 range = maximum $ filter isPalindrome $ products range range where
 
 problem5 :: [Integer] -> Integer
 problem5 = Euler.lcm
+
+problem6 :: [Integer] -> Integer
+problem6 range = squareSum - sumOfSquares where
+    squareSum = square $ sum range
+    sumOfSquares = sum $ map square range
