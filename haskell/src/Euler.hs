@@ -8,9 +8,11 @@ module Euler
 , problem7
 , problem8
 , problem9
+, problem10
 ) where
 
 import Data.List (foldl', maximum, tails, group, find)
+import Data.List.Ordered (minus, union, unionAll)
 import qualified Data.Char as Char
 import qualified Data.Map.Strict as Map
 
@@ -19,26 +21,25 @@ isqrt = floor . sqrt . fromIntegral
 
 x `multipleOf` y = x `mod` y == 0
 
-x `multipleOfAny` [] = False
-x `multipleOfAny` (y:ys) = x `multipleOf` y || x `multipleOfAny` ys
+x `multipleOfAny` ys = any (x `multipleOf`) ys
 
 fibonacciSeq :: (Integral a) => [a]
 fibonacciSeq = seq (0, 1) where
     seq (a, b) = a : seq (b, a + b)
 
 isPrime :: (Integral a) => a -> Bool
-isPrime x = not $ x `multipleOfAny` primes where
-    primes = takeWhile (<= isqrt x) primeSeq
+isPrime x = not $ x `multipleOfAny` checkPrimes where
+    checkPrimes = takeWhile (<= isqrt x) primes
 
-primeSeq :: (Integral a) => [a]
-primeSeq = 2 : filter isPrime [3,5..]
+primes :: (Integral a) => [a]
+primes = 2 : 3 : minus [5,7..] (unionAll [[p*p, p*p+2*p..] | p <- tail primes])
 
 factorize :: (Integral a) => a -> Map.Map a Int
-factorize x = factorize x primeSeq where
-    factorize 1 _ = Map.empty
-    factorize x (f:fs) = if x `multipleOf` f
-        then Map.insertWith (+) f 1 (factorize (x `div` f) (f:fs))
-        else factorize x fs
+factorize x = factorize' x primes where
+    factorize' 1 _ = Map.empty
+    factorize' x (f:fs) = if x `multipleOf` f
+        then Map.insertWith (+) f 1 (factorize' (x `div` f) (f:fs))
+        else factorize' x fs
 
 unfactorize :: (Integral a) => Map.Map a Int -> a
 unfactorize = product . flatten . Map.toList
@@ -55,7 +56,7 @@ divisorPairs x = take len $ zip list $ reverse list where
     list = divisors x
     len = (1 + length list) `div` 2
 
-digits :: Integer -> [Int]
+digits :: (Integral a) => a -> [Int]
 digits 0 = [0]
 digits x = reverse $ split x where
     split 0 = []
@@ -63,6 +64,7 @@ digits x = reverse $ split x where
         digit = fromIntegral $ n `mod` 10
         rest = fromIntegral $ n `div` 10
 
+isPalindrome :: (Integral a) => a -> Bool
 isPalindrome x = let
     d = digits x
     in d == reverse d
@@ -127,7 +129,7 @@ problem2 n = foldl' (+) 0 $ filter even $ takeWhile (<n) fibonacciSeq
 problem3 :: Integer -> Integer
 problem3 = fst . Map.findMax . factorize
 
-problem4 :: [Integer] -> Integer
+problem4 :: [Int] -> Int
 problem4 range = maximum $ filter isPalindrome $ products range range where
     products [] b = []
     products [a] b = map (*a) b
@@ -142,7 +144,7 @@ problem6 range = squareSum - sumOfSquares where
     sumOfSquares = sum $ map square range
 
 problem7 :: Int -> Integer
-problem7 n = primeSeq !! (n - 1)
+problem7 n = primes !! (n - 1)
 
 problem8 :: Int -> Int
 problem8 n = maximum $ map product $ windows n number where
@@ -173,3 +175,6 @@ problem9 x = maybe 0 product $ find eq dicksonTriples where
     eq t = sum t == x
     sum (a, b, c) = a + b + c
     product (a, b, c) = a * b * c
+
+problem10 :: Int -> Int
+problem10 n = sum $ takeWhile (<n) primes
