@@ -7,9 +7,10 @@ module Euler
 , problem6
 , problem7
 , problem8
+, problem9
 ) where
 
-import Data.List (foldl', maximum, tails)
+import Data.List (foldl', maximum, tails, group, find)
 import qualified Data.Char as Char
 import qualified Data.Map.Strict as Map
 
@@ -40,13 +41,23 @@ factorize x = factorize x primeSeq where
         else factorize x fs
 
 unfactorize :: (Integral a) => Map.Map a Int -> a
-unfactorize = product . concatMap replicate' . Map.toList where
-    replicate' (factor, count) = replicate count factor
+unfactorize = product . flatten . Map.toList
+
+flatten :: [(a, Int)] -> [a]
+flatten = concatMap replicate' where
+    replicate' (e, count) = replicate count e
+
+divisors :: (Integral a) => a -> [a]
+divisors = (1:) . map product . allCombinations . flatten . Map.toAscList . factorize
+
+divisorPairs :: (Integral a) => a -> [(a, a)]
+divisorPairs x = take len $ zip list $ reverse list where
+    list = divisors x
+    len = (1 + length list) `div` 2
 
 digits :: Integer -> [Int]
 digits 0 = [0]
 digits x = reverse $ split x where
-    split :: Integer -> [Int]
     split 0 = []
     split n = digit : (split rest) where
         digit = fromIntegral $ n `mod` 10
@@ -66,6 +77,46 @@ square x = x * x
 
 windows :: Int -> [a] -> [[a]]
 windows m = foldr (zipWith (:)) (repeat []) . take m . tails
+
+dicksonTriples :: (Integral a) => [(a, a, a)]
+dicksonTriples = concatMap triples [2,4..] where
+    triples r = map (\(s, t) -> (r + s, r + t, r + s + t)) pairs where
+        pairs = map (\d -> (d, sqr `div` d)) $ dropLast $ divisors r where
+            sqr = r * r `div` 2
+
+dropLast :: [a] -> [a]
+dropLast [] = []
+dropLast (x:[]) = []
+dropLast (x:xs) = x:(dropLast xs)
+
+removeOnce :: (Eq a) => a -> [a] -> [a]
+removeOnce _ [] = []
+removeOnce x (y:ys)
+    | x == y = ys
+    | otherwise = y : removeOnce x ys
+
+permutations :: (Eq a) => Int -> [a] -> [[a]]
+permutations _ [] = []
+permutations 1 xs = map (:[]) $ unique xs where
+    unique = map head . group
+permutations n xs = concatMap subperm $ unique xs where
+    unique = map head . group
+    subperm el = map (el:) (permutations (n - 1) $ removeOnce el xs)
+
+allPermutations :: (Eq a) => [a] -> [[a]]
+allPermutations xs = concatMap (\n -> permutations n xs) [1..length xs]
+
+combinations :: (Eq a) => Int -> [a] -> [[a]]
+combinations _ [] = []
+combinations 1 xs = map (:[]) $ unique xs where
+    unique = map head . group
+combinations n xs = concatMap subcomb $ uniqueWithTails xs where
+    uniqueWithTails [] = []
+    uniqueWithTails (x:xs) = (x, xs):(uniqueWithTails $ dropWhile (==x) xs)
+    subcomb (x, xs) = map (x:) $ combinations (n - 1) xs
+
+allCombinations :: (Eq a) => [a] -> [[a]]
+allCombinations xs = concatMap (\n -> combinations n xs) [1..length xs]
 
 problem1 :: Integer -> [Integer] -> Integer
 problem1 n divisors = foldl' (+) 0 $ filter (`multipleOfAny` divisors) [1..(n-1)]
@@ -116,3 +167,9 @@ problem8 n = maximum $ map product $ windows n number where
         \84580156166097919133875499200524063689912560717606\
         \05886116467109405077541002256983155200055935729725\
         \71636269561882670428252483600823257530420752963450"
+
+problem9 :: Int -> Int
+problem9 x = maybe 0 product $ find eq dicksonTriples where
+    eq t = sum t == x
+    sum (a, b, c) = a + b + c
+    product (a, b, c) = a * b * c
