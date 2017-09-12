@@ -11,120 +11,18 @@ module Euler
 , problem10
 ) where
 
-import Data.List (foldl', maximum, tails, group, find)
-import Data.List.Ordered (minus, union, unionAll)
+import Data.List (foldl', find)
 import qualified Data.Char as Char
 import qualified Data.Map.Strict as Map
-
-isqrt :: (Integral a) => a -> a
-isqrt = floor . sqrt . fromIntegral
-
-x `multipleOf` y = x `mod` y == 0
-
-x `multipleOfAny` ys = any (x `multipleOf`) ys
-
-fibonacciSeq :: (Integral a) => [a]
-fibonacciSeq = seq (0, 1) where
-    seq (a, b) = a : seq (b, a + b)
-
-isPrime :: (Integral a) => a -> Bool
-isPrime x = not $ x `multipleOfAny` checkPrimes where
-    checkPrimes = takeWhile (<= isqrt x) primes
-
-primes :: (Integral a) => [a]
-primes = 2 : 3 : minus [5,7..] (unionAll [[p*p, p*p+2*p..] | p <- tail primes])
-
-factorize :: (Integral a) => a -> Map.Map a Int
-factorize x = factorize' x primes where
-    factorize' 1 _ = Map.empty
-    factorize' x (f:fs) = if x `multipleOf` f
-        then Map.insertWith (+) f 1 (factorize' (x `div` f) (f:fs))
-        else factorize' x fs
-
-unfactorize :: (Integral a) => Map.Map a Int -> a
-unfactorize = product . flatten . Map.toList
-
-flatten :: [(a, Int)] -> [a]
-flatten = concatMap replicate' where
-    replicate' (e, count) = replicate count e
-
-divisors :: (Integral a) => a -> [a]
-divisors = (1:) . map product . allCombinations . flatten . Map.toAscList . factorize
-
-divisorPairs :: (Integral a) => a -> [(a, a)]
-divisorPairs x = take len $ zip list $ reverse list where
-    list = divisors x
-    len = (1 + length list) `div` 2
-
-digits :: (Integral a) => a -> [Int]
-digits 0 = [0]
-digits x = reverse $ split x where
-    split 0 = []
-    split n = digit : (split rest) where
-        digit = fromIntegral $ n `mod` 10
-        rest = fromIntegral $ n `div` 10
-
-isPalindrome :: (Integral a) => a -> Bool
-isPalindrome x = let
-    d = digits x
-    in d == reverse d
-
-lcm :: (Integral a, Ord a) => [a] -> a
-lcm numbers = let
-    commonFactors = foldl' (Map.unionWith max) Map.empty $ map factorize numbers
-    in unfactorize commonFactors
-
-square :: (Integral a) => a -> a
-square x = x * x
-
-windows :: Int -> [a] -> [[a]]
-windows m = foldr (zipWith (:)) (repeat []) . take m . tails
-
-dicksonTriples :: (Integral a) => [(a, a, a)]
-dicksonTriples = concatMap triples [2,4..] where
-    triples r = map (\(s, t) -> (r + s, r + t, r + s + t)) pairs where
-        pairs = map (\d -> (d, sqr `div` d)) $ dropLast $ divisors r where
-            sqr = r * r `div` 2
-
-dropLast :: [a] -> [a]
-dropLast [] = []
-dropLast (x:[]) = []
-dropLast (x:xs) = x:(dropLast xs)
-
-removeOnce :: (Eq a) => a -> [a] -> [a]
-removeOnce _ [] = []
-removeOnce x (y:ys)
-    | x == y = ys
-    | otherwise = y : removeOnce x ys
-
-permutations :: (Eq a) => Int -> [a] -> [[a]]
-permutations _ [] = []
-permutations 1 xs = map (:[]) $ unique xs where
-    unique = map head . group
-permutations n xs = concatMap subperm $ unique xs where
-    unique = map head . group
-    subperm el = map (el:) (permutations (n - 1) $ removeOnce el xs)
-
-allPermutations :: (Eq a) => [a] -> [[a]]
-allPermutations xs = concatMap (\n -> permutations n xs) [1..length xs]
-
-combinations :: (Eq a) => Int -> [a] -> [[a]]
-combinations _ [] = []
-combinations 1 xs = map (:[]) $ unique xs where
-    unique = map head . group
-combinations n xs = concatMap subcomb $ uniqueWithTails xs where
-    uniqueWithTails [] = []
-    uniqueWithTails (x:xs) = (x, xs):(uniqueWithTails $ dropWhile (==x) xs)
-    subcomb (x, xs) = map (x:) $ combinations (n - 1) xs
-
-allCombinations :: (Eq a) => [a] -> [[a]]
-allCombinations xs = concatMap (\n -> combinations n xs) [1..length xs]
+import Euler.Collections (windows)
+import Euler.NumberTheory (primes, fibs, multipleOfAny, factorize, isPalindrome, lcm, dicksonTriples)
+import Euler.Math (square)
 
 problem1 :: Integer -> [Integer] -> Integer
 problem1 n divisors = foldl' (+) 0 $ filter (`multipleOfAny` divisors) [1..(n-1)]
 
 problem2 :: Integer -> Integer
-problem2 n = foldl' (+) 0 $ filter even $ takeWhile (<n) fibonacciSeq
+problem2 n = foldl' (+) 0 $ filter even $ takeWhile (<n) fibs
 
 problem3 :: Integer -> Integer
 problem3 = fst . Map.findMax . factorize
@@ -136,7 +34,7 @@ problem4 range = maximum $ filter isPalindrome $ products range range where
     products (a:as) b = products [a] b ++ (products as b)
 
 problem5 :: [Integer] -> Integer
-problem5 = Euler.lcm
+problem5 = Euler.NumberTheory.lcm
 
 problem6 :: [Integer] -> Integer
 problem6 range = squareSum - sumOfSquares where

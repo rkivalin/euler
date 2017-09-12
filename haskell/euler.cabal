@@ -16,6 +16,10 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   exposed-modules:     Euler
+                     , Euler.Collections
+                     , Euler.Math
+                     , Euler.Combinatorics
+                     , Euler.NumberTheory
   build-depends:       base >= 4.7 && < 5
                      , containers
                      , data-ordlist
@@ -33,6 +37,10 @@ test-suite euler-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
   main-is:             Spec.hs
+  other-modules:       EulerTest
+                     , Euler.MathTest
+                     , Euler.CombinatoricsTest
+                     , Euler.NumberTheoryTest
   build-depends:       base
                      , euler
                      , HTF
