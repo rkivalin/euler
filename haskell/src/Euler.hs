@@ -10,13 +10,14 @@ module Euler
 , problem9
 , problem10
 , problem11
+, problem12
 ) where
 
 import Data.List (foldl', find, transpose)
 import qualified Data.Char as Char
 import qualified Data.Map.Strict as Map
 import Euler.Collections (windows)
-import Euler.NumberTheory (primes, fibs, multipleOfAny, factorize, isPalindrome, lcm, dicksonTriples)
+import Euler.NumberTheory (primes, fibs, multipleOfAny, factorize, divisors, isPalindrome, lcm, dicksonTriples, triangleNumbers)
 import Euler.Math (square)
 
 problem1 :: Integer -> [Integer] -> Integer
@@ -26,10 +27,10 @@ problem2 :: Integer -> Integer
 problem2 n = foldl' (+) 0 $ filter even $ takeWhile (<n) fibs
 
 problem3 :: Integer -> Integer
-problem3 = fst . Map.findMax . factorize
+problem3 = fst . Map.findMax . factorize primes
 
 problem4 :: [Int] -> Int
-problem4 range = maximum $ filter isPalindrome $ products range range where
+problem4 range = maximum $ filter (isPalindrome 10) $ products range range where
     products [] b = []
     products [a] b = map (*a) b
     products (a:as) b = products [a] b ++ (products as b)
@@ -112,3 +113,6 @@ problem11 len = find $ horizontal ++ vertical ++ diagonal1 ++ diagonal2 where
     diag = foldr (zipWith (:)) (repeat []) . shift
     shift [] = []
     shift (x:xs) = x:(shift $ map tail xs)
+
+problem12 :: Int -> Int
+problem12 n = maybe 0 fst $ find ((>n) . length . snd) $ map (\x -> (x, divisors primes x)) triangleNumbers

@@ -44,3 +44,7 @@ test_problem10 = do
 
 test_problem11 = do
     assertEqual 70600674 $ problem11 4
+
+test_problem12 = do
+    assertEqual 28 $ problem12 5
+    assertEqual 76576500 $ problem12 500
