@@ -41,3 +41,6 @@ test_problem9 = do
 test_problem10 = do
     assertEqual 17 $ problem10 10
     assertEqual 142913828922 $ problem10 (2 * 10^6)
+
+test_problem11 = do
+    assertEqual 70600674 $ problem11 4
