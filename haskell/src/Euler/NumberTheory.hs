@@ -8,6 +8,7 @@ module Euler.NumberTheory
 , divisors
 , divisorPairs
 , digits
+, undigits
 , isPalindrome
 , Euler.NumberTheory.lcm
 , dicksonTriples
@@ -59,13 +60,16 @@ divisorPairs primes x = take len $ zip list $ reverse list where
     list = divisors primes x
     len = (1 + length list) `div` 2
 
-digits :: (Integral a) => a -> [Int]
-digits 0 = [0]
-digits x = reverse $ split x where
-    split 0 = []
-    split n = digit : (split rest) where
-        digit = fromIntegral $ n `mod` 10
-        rest = fromIntegral $ n `div` 10
+digits :: (Integral a) => a -> a -> [a]
+digits base x
+    | x < base = [x]
+    | otherwise = digit : (digits base rest) where
+        digit = x `mod` base
+        rest = x `div` base
+
+undigits :: (Integral a) => a -> [a] -> a
+undigits base = fst . foldl' append (0, 1) where
+    append (number, exp) digit = (number + digit * exp, exp * base)
 
 reverseNumber :: (Integral a) => a -> a -> a
 reverseNumber base x = rev x 0 where

@@ -16,3 +16,6 @@ test_triangleNumbers = do
 
 prop_reverseNumber x y = x >= 0 && y > 1 && x `mod` y /= 0 ==> x == (reverseNumber y . reverseNumber y) x
     where types = x::Integer
+
+prop_digits x y = x > 0 && y > 1 ==> x == (undigits y . digits y) x
+    where types = x::Integer

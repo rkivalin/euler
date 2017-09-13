@@ -3,9 +3,10 @@ module Euler.Collections
 , removeOnce
 , windows
 , dropLast
+, lastN
 ) where
 
-import Data.List (tails)
+import Data.List (tails, foldl')
 
 skipDuplicates :: (Eq a) => [a] -> [a]
 skipDuplicates [] = []
@@ -28,3 +29,6 @@ dropLast :: [a] -> [a]
 dropLast [] = []
 dropLast (x:[]) = []
 dropLast (x:xs) = x:(dropLast xs)
+
+lastN :: Int -> [a] -> [a]
+lastN n = foldl' (const . tail) <*> drop n
