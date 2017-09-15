@@ -22,19 +22,20 @@ Which starting number, under one million, produces the longest chain?
 NOTE: Once the chain starts the terms are allowed to go above one million.
 -}
 
-import Data.List (maximumBy)
+import Data.List (maximumBy, foldl')
 import Data.Function (on)
-import qualified Data.HashMap.Strict as HashMap
+import qualified Data.IntMap.Strict as IntMap
 import Euler.NumberTheory (collatzNext)
 
-collatzLen x map = case HashMap.lookup x map of
-    Just len -> (len, map)
-    Nothing -> (computed, HashMap.insert x computed nextMap) where
-        (next, nextMap) = collatzLen (collatzNext x) map
-        computed = 1 + next
+collatzLen :: IntMap.IntMap Int -> Int -> (Int, IntMap.IntMap Int)
+collatzLen map x = maybe compute (flip (,) map) lookup where
+    lookup = IntMap.lookup x map
+    compute = (len, IntMap.insert x len nextMap) where
+        (next, nextMap) = collatzLen map $ collatzNext x
+        len = 1 + next
 
 problem14 :: Int -> Int
 problem14 n = fst max where
-    max = maximumBy (compare `on` snd) $ HashMap.toList filteredMap
-    filteredMap = HashMap.filterWithKey (\k v -> k < n) map
-    map = foldr (\x -> snd . collatzLen x) (HashMap.singleton 1 1) [1..n]
+    max = maximumBy (compare `on` snd) items
+    items = filter ((<n) . fst) $ IntMap.toList map
+    map = foldl' (\x -> snd . collatzLen x) (IntMap.singleton 1 1) [1..n]
