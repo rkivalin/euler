@@ -20,4 +20,5 @@ solution ("10":_) = putStrLn . show $ problem10 (2 * 10^6)
 solution ("11":_) = putStrLn . show $ problem11 4
 solution ("12":_) = putStrLn . show $ problem12 500
 solution ("13":_) = putStrLn . show $ problem13 10
+solution ("14":_) = putStrLn . show $ problem14 (10^6)
 solution _ = putStrLn "Solution for this problem is not implemented"

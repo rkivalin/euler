@@ -19,3 +19,6 @@ prop_reverseNumber x y = x >= 0 && y > 1 && x `mod` y /= 0 ==> x == (reverseNumb
 
 prop_digits x y = x > 0 && y > 1 ==> x == (undigits y . digits y) x
     where types = x::Integer
+
+test_collatzSeq = do
+    assertEqual 10 $ length . collatzSeq $ 13

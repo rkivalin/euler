@@ -14,9 +14,13 @@ module Euler.NumberTheory
 , dicksonTriples
 , triangleNumbers
 , reverseNumber
+, showNumber
+, collatzNext
+, collatzSeq
 ) where
 
 import Data.List (foldl')
+import Data.Char (intToDigit)
 import qualified Data.Map.Strict as Map
 import qualified Data.List.Ordered as OrderedList
 import Euler.Math (isqrt)
@@ -71,6 +75,9 @@ undigits :: (Integral a) => a -> [a] -> a
 undigits base = fst . foldl' append (0, 1) where
     append (number, exp) digit = (number + digit * exp, exp * base)
 
+showNumber :: (Integral a) => a -> a -> String
+showNumber base = reverse . map (intToDigit . fromIntegral) . digits base
+
 reverseNumber :: (Integral a) => a -> a -> a
 reverseNumber base x = rev x 0 where
     rev x prepend
@@ -97,3 +104,10 @@ dicksonTriples = concatMap triples [2,4..] where
 triangleNumbers :: (Integral a) => [a]
 triangleNumbers = seq (1, 2) where
     seq (a, b) = a : seq (a + b, b + 1)
+
+collatzNext :: (Integral a) => a -> a
+collatzNext x = if odd x then 3 * x + 1 else x `div` 2
+
+collatzSeq :: (Integral a) => a -> [a]
+collatzSeq 1 = [1]
+collatzSeq x = x:(collatzSeq $ collatzNext x)

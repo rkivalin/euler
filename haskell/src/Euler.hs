@@ -12,13 +12,17 @@ module Euler
 , problem11
 , problem12
 , problem13
+, problem14
 ) where
 
-import Data.List (foldl', find, transpose)
+import Data.List (foldl', find, transpose, maximumBy)
+import Data.Function (on)
 import qualified Data.Char as Char
 import qualified Data.Map.Strict as Map
+import qualified Data.HashMap.Strict as HashMap
+
 import Euler.Collections (windows, lastN)
-import Euler.NumberTheory (primes, fibs, multipleOfAny, factorize, divisors, isPalindrome, lcm, dicksonTriples, triangleNumbers, digits, undigits)
+import Euler.NumberTheory (primes, fibs, multipleOfAny, factorize, divisors, isPalindrome, lcm, dicksonTriples, triangleNumbers, digits, undigits, collatzNext)
 import Euler.Math (square)
 
 problem1 :: Integer -> [Integer] -> Integer
@@ -225,3 +229,15 @@ problem13 n = firstDigits $ sum input where
     firstDigits = undigits 10 . lastN n . digits 10
     input = parse problem13_data
     parse = map read . lines
+
+collatzLen x map = case HashMap.lookup x map of
+    Just len -> (len, map)
+    Nothing -> (computed, HashMap.insert x computed nextMap) where
+        (next, nextMap) = collatzLen (collatzNext x) map
+        computed = 1 + next
+
+problem14 :: Int -> Int
+problem14 n = fst max where
+    max = maximumBy (compare `on` snd) $ HashMap.toList filteredMap
+    filteredMap = HashMap.filterWithKey (\k v -> k < n) map
+    map = foldr (\x -> snd . collatzLen x) (HashMap.singleton 1 1) [1..n]
