@@ -20,6 +20,20 @@ library
                      , Euler.Math
                      , Euler.Combinatorics
                      , Euler.NumberTheory
+  other-modules:       Euler.Solution.Problem1
+                     , Euler.Solution.Problem2
+                     , Euler.Solution.Problem3
+                     , Euler.Solution.Problem4
+                     , Euler.Solution.Problem5
+                     , Euler.Solution.Problem6
+                     , Euler.Solution.Problem7
+                     , Euler.Solution.Problem8
+                     , Euler.Solution.Problem9
+                     , Euler.Solution.Problem10
+                     , Euler.Solution.Problem11
+                     , Euler.Solution.Problem12
+                     , Euler.Solution.Problem13
+                     , Euler.Solution.Problem14
   build-depends:       base >= 4.7 && < 5
                      , containers
                      , data-ordlist
