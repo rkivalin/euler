@@ -19,6 +19,7 @@ module Euler(
     problem18,
     problem18_data,
     problem18_test_data,
+    problem19,
 ) where
 
 import Euler.Solution.Problem1
@@ -39,3 +40,4 @@ import Euler.Solution.Problem15
 import Euler.Solution.Problem16
 import Euler.Solution.Problem17
 import Euler.Solution.Problem18
+import Euler.Solution.Problem19

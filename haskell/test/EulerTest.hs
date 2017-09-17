@@ -74,3 +74,6 @@ test_problem17 = do
 test_problem18 = do
     assertEqual 23 $ problem18 problem18_test_data
     assertEqual 1074 $ problem18 problem18_data
+
+test_problem19 = do
+    assertEqual 171 problem19
