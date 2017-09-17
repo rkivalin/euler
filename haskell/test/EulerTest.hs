@@ -70,3 +70,7 @@ test_problem17 = do
     assertEqual 23 $ problem17 [342]
     assertEqual 20 $ problem17 [115]
     assertEqual 21124 $ problem17 [1..1000]
+
+test_problem18 = do
+    assertEqual 23 $ problem18 problem18_test_data
+    assertEqual 1074 $ problem18 problem18_data
