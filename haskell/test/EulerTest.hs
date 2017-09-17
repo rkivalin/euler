@@ -60,3 +60,7 @@ test_problem14 = do
 test_problem15 = do
     assertEqual 6 $ problem15 2 2
     assertEqual 137846528820 $ problem15 20 20
+
+test_problem16 = do
+    assertEqual 26 $ problem16 2 15
+    assertEqual 1366 $ problem16 2 1000
