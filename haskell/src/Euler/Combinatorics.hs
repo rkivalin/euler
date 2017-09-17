@@ -1,11 +1,14 @@
-module Euler.Combinatorics
-( permutations
-, allPermutations
-, combinations
-, allCombinations
+module Euler.Combinatorics (
+    permutations,
+    allPermutations,
+    combinations,
+    allCombinations,
+    choose,
+    multiChoose,
 ) where
 
 import Euler.Collections (skipDuplicates, removeOnce)
+import Euler.Math ((!\), factorial)
 
 permutations :: (Eq a) => Int -> [a] -> [[a]]
 permutations _ [] = []
@@ -26,3 +29,13 @@ combinations n xs = concatMap subcomb $ uniqueWithTails xs where
 
 allCombinations :: (Eq a) => [a] -> [[a]]
 allCombinations xs = concatMap (\n -> combinations n xs) [1..length xs]
+
+choose :: Integral a => a -> a -> a
+n `choose` k
+    | k <= halfN = (n !\ k) `div` (factorial k)
+    | otherwise = n `choose` (n - k)
+    where
+        halfN = n `div` 2
+
+multiChoose :: Integral a => a -> a -> a
+n `multiChoose` k = (n + k - 1) `choose` k

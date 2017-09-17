@@ -27,7 +27,7 @@ Number of combinations is the same as assigning w stars into (h + 1) buckets,
 which is the number of ways to choose w buckets from (h + 1) with repetition.
 -}
 
-import Euler.NumberTheory (multiChoose)
+import Euler.Combinatorics (multiChoose)
 
 problem15 :: Integer -> Integer -> Integer
 problem15 w h = succ h `multiChoose` w

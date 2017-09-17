@@ -17,15 +17,13 @@ module Euler.NumberTheory
 , showNumber
 , collatzNext
 , collatzSeq
-, choose
-, multiChoose
 ) where
 
 import Data.List (foldl')
 import Data.Char (intToDigit)
 import qualified Data.Map.Strict as Map
 import qualified Data.List.Ordered as OrderedList
-import Euler.Math (isqrt, factorial, (!\))
+import Euler.Math (isqrt)
 import Euler.Collections (dropLast)
 import Euler.Combinatorics (allCombinations)
 
@@ -113,13 +111,3 @@ collatzNext x = if odd x then 3 * x + 1 else x `div` 2
 collatzSeq :: (Integral a) => a -> [a]
 collatzSeq 1 = [1]
 collatzSeq x = x:(collatzSeq $ collatzNext x)
-
-choose :: Integral a => a -> a -> a
-n `choose` k
-    | k <= halfN = (n !\ k) `div` (factorial k)
-    | otherwise = n `choose` (n - k)
-    where
-        halfN = n `div` 2
-
-multiChoose :: Integral a => a -> a -> a
-n `multiChoose` k = (n + k - 1) `choose` k
