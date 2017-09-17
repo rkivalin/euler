@@ -56,3 +56,7 @@ test_problem14 = do
     assertEqual 9 $ problem14 13
     assertEqual 77031 $ problem14 100000
     -- assertEqual 837799 $ problem14 1000000
+
+test_problem15 = do
+    assertEqual 6 $ problem15 2 2
+    assertEqual 137846528820 $ problem15 20 20
