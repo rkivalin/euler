@@ -64,3 +64,9 @@ test_problem15 = do
 test_problem16 = do
     assertEqual 26 $ problem16 2 15
     assertEqual 1366 $ problem16 2 1000
+
+test_problem17 = do
+    assertEqual 19 $ problem17 [1..5]
+    assertEqual 23 $ problem17 [342]
+    assertEqual 20 $ problem17 [115]
+    assertEqual 21124 $ problem17 [1..1000]

@@ -23,4 +23,5 @@ solution ("13":_) = putStrLn . show $ problem13 10
 solution ("14":_) = putStrLn . show $ problem14 (10^6)
 solution ("15":_) = putStrLn . show $ problem15 20 20
 solution ("16":_) = putStrLn . show $ problem16 2 1000
+solution ("17":_) = putStrLn . show $ problem17 [1..1000]
 solution _ = putStrLn "Solution for this problem is not implemented"
