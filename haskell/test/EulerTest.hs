@@ -77,3 +77,7 @@ test_problem18 = do
 
 test_problem19 = do
     assertEqual 171 problem19
+
+test_problem20 = do
+    assertEqual 27 $ problem20 10
+    assertEqual 648 $ problem20 100
