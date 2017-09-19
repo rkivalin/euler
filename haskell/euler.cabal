@@ -41,6 +41,7 @@ library
                      , Euler.Solution.Problem18
                      , Euler.Solution.Problem19
                      , Euler.Solution.Problem20
+                     , Euler.Solution.Problem21
   build-depends:       base >= 4.7 && < 5
                      , containers
                      , data-ordlist

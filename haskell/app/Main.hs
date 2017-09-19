@@ -27,4 +27,5 @@ solution ("17":_) = putStrLn . show $ problem17 [1..1000]
 solution ("18":_) = putStrLn . show $ problem18 problem18_data
 solution ("19":_) = putStrLn . show $ problem19
 solution ("20":_) = putStrLn . show $ problem20 100
+solution ("21":_) = putStrLn . show $ problem21 10000
 solution _ = putStrLn "Solution for this problem is not implemented"

@@ -17,6 +17,7 @@ module Euler.NumberTheory
 , showNumber
 , collatzNext
 , collatzSeq
+, amicable
 ) where
 
 import Data.List (foldl')
@@ -111,3 +112,8 @@ collatzNext x = if odd x then 3 * x + 1 else x `div` 2
 collatzSeq :: (Integral a) => a -> [a]
 collatzSeq 1 = [1]
 collatzSeq x = x:(collatzSeq $ collatzNext x)
+
+amicable :: Integral a => [a] -> a -> Bool
+amicable primes x = y /= x && divisorSum y == x where
+    y = divisorSum x
+    divisorSum = sum . dropLast . divisors primes
