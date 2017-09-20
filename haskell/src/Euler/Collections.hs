@@ -1,9 +1,10 @@
-module Euler.Collections
-( skipDuplicates
-, removeOnce
-, windows
-, dropLast
-, lastN
+module Euler.Collections (
+    skipDuplicates,
+    removeOnce,
+    windows,
+    dropLast,
+    lastN,
+    enumerate,
 ) where
 
 import Data.List (tails, foldl')
@@ -32,3 +33,6 @@ dropLast (x:xs) = x:(dropLast xs)
 
 lastN :: Int -> [a] -> [a]
 lastN n = foldl' (const . tail) <*> drop n
+
+enumerate :: [a] -> [(Int, a)]
+enumerate = zip [1..]

@@ -84,3 +84,6 @@ test_problem20 = do
 
 test_problem21 = do
     assertEqual 31626 $ problem21 10000
+
+test_problem22 = do
+    problem22 "assets/p022_names.txt" >>= assertEqual 871198282
