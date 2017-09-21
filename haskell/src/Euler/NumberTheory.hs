@@ -4,7 +4,6 @@ module Euler.NumberTheory
 , multipleOf
 , multipleOfAny
 , factorize
-, unfactorize
 , divisors
 , divisorPairs
 , digits
@@ -43,22 +42,21 @@ fibs :: (Integral a) => [a]
 fibs = seq (0, 1) where
     seq (a, b) = a : seq (b, a + b)
 
-factorize :: (Integral a) => [a] -> a -> Map.Map a Int
-factorize _ 0 = Map.singleton 0 1
-factorize _ 1 = Map.empty
-factorize (f:fs) x
-    | x `multipleOf` f = Map.insertWith (+) f 1 (factorize (f:fs) (x `div` f))
+factorize :: Integral a => [a] -> a -> [a]
+factorize _ 1 = []
+factorize primes@(f:fs) x
+    | x `multipleOf` f = f : factorize primes (x `div` f)
     | otherwise = factorize fs x
-
-unfactorize :: (Integral a) => Map.Map a Int -> a
-unfactorize = product . flatten . Map.toList
 
 flatten :: [(a, Int)] -> [a]
 flatten = concatMap replicate' where
     replicate' (e, count) = replicate count e
 
+factorsMap :: Integral a => [a] -> Map.Map a Int
+factorsMap = foldl' (\m f -> Map.insertWith (+) f 1 m) Map.empty
+
 divisors :: (Integral a) => [a] -> a -> [a]
-divisors primes = (1:) . map product . allCombinations . flatten . Map.toAscList . factorize primes
+divisors primes = (1:) . map product . allCombinations . factorize primes
 
 divisorPairs :: (Integral a) => [a] -> a -> [(a, a)]
 divisorPairs primes x = take len $ zip list $ reverse list where
@@ -92,9 +90,9 @@ isPalindrome base x = x == reverseNumber base x
 
 lcm :: (Integral a, Ord a) => [a] -> a
 lcm numbers =
-    let factorizations = map (factorize primes) numbers
+    let factorizations = map (factorsMap . factorize primes) numbers
         commonFactors = foldl' (Map.unionWith max) Map.empty factorizations
-    in unfactorize commonFactors
+    in product . flatten . Map.toList $ commonFactors
 
 dicksonTriples :: (Integral a) => [(a, a, a)]
 dicksonTriples = concatMap triples [2,4..] where

@@ -13,4 +13,4 @@ import qualified Data.Map as Map
 import Euler.NumberTheory (factorize, primes)
 
 problem3 :: Integer -> Integer
-problem3 = fst . Map.findMax . factorize primes
+problem3 = last . factorize primes

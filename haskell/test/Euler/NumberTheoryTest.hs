@@ -4,7 +4,7 @@ module Euler.NumberTheoryTest (htf_thisModulesTests) where
 import Test.Framework
 import Euler.NumberTheory
 
-prop_factorize x = x >= 0 ==> x == (unfactorize . factorize primes) x
+prop_factorize x = x > 0 ==> x == (product . factorize primes) x
     where types = x::Integer
 
 test_dicksonTriples = do
